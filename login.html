@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng Nhập</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #2575fc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .login-box button:hover {
+      background-color: #1a5ed9;
+    }
+
+    .login-box a {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: #2575fc;
+      text-decoration: none;
+    }
+
+    .login-box a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Đăng Nhập</h2>
+    <form onsubmit="handleLogin(event)">
+      <input type="text" id="username" placeholder="Tên đăng nhập" required />
+      <input type="password" id="password" placeholder="Mật khẩu" required />
+      <button type="submit">Đăng nhập</button>
+      <a href="đăng kí.html">Chưa có tài khoản? Đăng ký</a>
+    </form>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const inputUsername = document.getElementById("username").value;
+      const inputPassword = document.getElementById("password").value;
+
+      // Lấy danh sách người dùng từ localStorage
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      // Kiểm tra nếu có tài khoản khớp với tên đăng nhập và mật khẩu
+      const user = users.find(
+        (user) =>
+          user.username === inputUsername && user.password === inputPassword
+      );
+
+      if (user) {
+        // Lưu trạng thái đăng nhập
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("user", JSON.stringify(user));
+        alert("✅ Đăng nhập thành công!");
+        window.location.href = "trang chủ.html"; // Chuyển đến trang chủ
+      } else {
+        alert("❌ Tên đăng nhập hoặc mật khẩu không đúng.");
+      }
+    }
+  </script>
+</body>
+</html>

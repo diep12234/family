@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng Ký</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .register-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      width: 340px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .register-box h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .register-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .register-box button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background-color: #ff6b8b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .register-box button:hover {
+      background-color: #e45a75;
+    }
+
+    .register-box a {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #555;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .register-box a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="register-box">
+    <h2>Đăng Ký</h2>
+    <form onsubmit="handleRegister(event)">
+      <input type="text" id="username" placeholder="Tên đăng nhập" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Mật khẩu" required>
+      <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+      <button type="submit">Tạo tài khoản</button>
+    </form>
+    <a href="login.html">← Quay lại đăng nhập</a>
+  </div>
+
+  <script>
+    function handleRegister(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert("❌ Mật khẩu xác nhận không khớp!");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("🔒 Mật khẩu phải từ 6 ký tự trở lên.");
+        return;
+      }
+
+      // Lấy danh sách người dùng từ localStorage
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Kiểm tra xem tài khoản đã tồn tại chưa
+      if (users.some(user => user.username === username || user.email === email)) {
+        alert("❌ Tên đăng nhập hoặc email đã tồn tại.");
+        return;
+      }
+
+      // Gán vai trò mặc định cho người dùng là 'user'
+      const role = 'user';
+
+      const newUser = {
+        username,
+        email,
+        password,
+        role
+      };
+
+      // Thêm người dùng mới vào danh sách
+      users.push(newUser);
+
+      // Lưu lại danh sách người dùng vào localStorage
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert("✅ Đăng ký thành công! Chuyển đến trang đăng nhập...");
+      window.location.href = "login.html"; // Chuyển đến trang đăng nhập
+    }
+  </script>
+
+</body>
+</html>

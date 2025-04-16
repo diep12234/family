@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Cá Nhân</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #36d1dc, #5b86e5);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .welcome-box {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.7s ease;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ff4b5c;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #e8414f;
+    }
+
+    .update-btn {
+      margin-top: 20px;
+      background: #ffd700;
+      color: #333;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #updateForm {
+      display: none;
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    #updateForm input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #updateForm button {
+      margin-top: 10px;
+      background: #00ffab;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 10px auto;
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="logout-btn" onclick="logout()">Đăng Xuất</button>
+
+  <div class="welcome-box">
+    <img id="avatarPreview" class="avatar" src="" alt="Ảnh đại diện" style="display:none;">
+    <h1>🎉 Chào mừng bạn trở lại!</h1>
+    <p id="welcomeMsg">Bạn đã đăng nhập thành công.</p>
+    <button class="update-btn" onclick="toggleForm()">Cập nhật thông tin</button>
+    <a href="family.html">
+        <button style="margin-top: 20px; padding: 10px 20px; border-radius: 10px; background: #2ecc71; color: white; border: none; cursor: pointer;">
+          ➕ Quản lý Gia Phả
+        </button>
+      </a>
+
+    <form id="updateForm" onsubmit="updateInfo(event)">
+      <input type="text" id="newUsername" placeholder="Tên người dùng mới">
+      <input type="email" id="newEmail" placeholder="Email mới">
+      <input type="tel" id="newPhone" placeholder="Số điện thoại">
+      <input type="file" id="newAvatar" accept="image/*">
+      <button type="submit">Lưu thay đổi</button>
+    </form>
+  </div>
+
+  <script>
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (isLoggedIn !== 'true' || !user) {
+      alert("⚠️ Bạn chưa đăng nhập!");
+      window.location.href = "login.html";
+    } else {
+      document.getElementById('welcomeMsg').textContent = `Xin chào, ${user.username || 'Người dùng'}!`;
+
+      if (user.avatar) {
+        const avatar = document.getElementById('avatarPreview');
+        avatar.src = user.avatar;
+        avatar.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      localStorage.setItem('isLoggedIn', 'false');
+      alert("👋 Bạn đã đăng xuất.");
+      window.location.href = "login.html";
+    }
+rr
+    function toggleForm() {
+      const form = document.getElementById('updateForm');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateInfo(event) {
+      event.preventDefault();
+
+      const newUsername = document.getElementById('newUsername').value.trim();
+      const newEmail = document.getElementById('newEmail').value.trim();
+      const newPhone = document.getElementById('newPhone').value.trim();
+      const avatarFile = document.getElementById('newAvatar').files[0];
+
+      if (newUsername) user.username = newUsername;
+      if (newEmail) user.email = newEmail;
+      if (newPhone) user.phone = newPhone;
+
+      if (avatarFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          user.avatar = e.target.result;
+          localStorage.setItem('user', JSON.stringify(user));
+          alert("✅ Cập nhật thành công!");
+          location.reload(); // Refresh để cập nhật giao diện
+        };
+        reader.readAsDataURL(avatarFile);
+      } else {
+        localStorage.setItem('user', JSON.stringify(user));
+        alert("✅ Cập nhật thành công!");
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

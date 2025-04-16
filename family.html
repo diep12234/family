@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Gia Phả</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .form-box, table {
+      margin: 20px auto;
+      width: 80%;
+      max-width: 700px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .edit-btn, .delete-btn {
+      padding: 6px 10px;
+      margin: 2px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .edit-btn {
+      background: #f1c40f;
+      color: #333;
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📜 Quản Lý Gia Phả</h1>
+
+  <div class="form-box">
+    <input type="text" id="name" placeholder="Họ tên">
+    <input type="text" id="dob" placeholder="Năm sinh">
+    <input type="text" id="relation" placeholder="Quan hệ">
+    <button onclick="addMember()">Thêm thành viên</button>
+    <button id="updateBtn" onclick="updateMember()" style="display:none;">Lưu chỉnh sửa</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Họ tên</th>
+        <th>Năm sinh</th>
+        <th>Quan hệ</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="familyTable">
+      <!-- Thành viên sẽ được thêm ở đây -->
+    </tbody>
+  </table>
+
+  <script>
+    let family = JSON.parse(localStorage.getItem('family')) || [];
+    let editIndex = -1;
+
+    function renderFamily() {
+      const table = document.getElementById('familyTable');
+      table.innerHTML = '';
+      family.forEach((member, index) => {
+        table.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${member.name}</td>
+            <td>${member.dob}</td>
+            <td>${member.relation}</td>
+            <td>
+              <button class="edit-btn" onclick="editMember(${index})">Sửa</button>
+              <button class="delete-btn" onclick="deleteMember(${index})">Xóa</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function addMember() {
+      const name = document.getElementById('name').value.trim();
+      const dob = document.getElementById('dob').value.trim();
+      const relation = document.getElementById('relation').value.trim();
+
+      if (!name || !dob || !relation) {
+        alert("⚠️ Vui lòng điền đầy đủ thông tin!");
+        return;
+      }
+
+      family.push({ name, dob, relation });
+      localStorage.setItem('family', JSON.stringify(family));
+      renderFamily();
+      clearForm();
+    }
+
+    function deleteMember(index) {
+      if (confirm("Bạn có chắc muốn xóa thành viên này?")) {
+        family.splice(index, 1);
+        localStorage.setItem('family', JSON.stringify(family));
+        renderFamily();
+      }
+    }
+
+    function editMember(index) {
+      const member = family[index];
+      document.getElementById('name').value = member.name;
+      document.getElementById('dob').value = member.dob;
+      document.getElementById('relation').value = member.relation;
+      document.getElementById('updateBtn').style.display = 'inline-block';
+      editIndex = index;
+    }
+
+    function updateMember() {
+      if (editIndex >= 0) {
+        const name = document.getElementById('name').value.trim();
+        const dob = document.getElementById('dob').value.trim();
+        const relation = document.getElementById('relation').value.trim();
+
+        if (!name || !dob || !relation) {
+          alert("⚠️ Không được bỏ trống!");
+          return;
+        }
+
+        family[editIndex] = { name, dob, relation };
+        localStorage.setItem('family', JSON.stringify(family));
+        renderFamily();
+        clearForm();
+        editIndex = -1;
+        document.getElementById('updateBtn').style.display = 'none';
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('name').value = '';
+      document.getElementById('dob').value = '';
+      document.getElementById('relation').value = '';
+    }
+
+    // Hiển thị khi mở trang
+    renderFamily();
+  </script>
+
+</body>
+</html>
